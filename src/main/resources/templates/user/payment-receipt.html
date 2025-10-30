@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .receipt-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            border: 2px solid #23b5d3;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #23b5d3;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .receipt-title {
+            color: #23b5d3;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .receipt-subtitle {
+            color: #071013;
+            font-size: 1.2rem;
+        }
+        .receipt-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .detail-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #071013;
+        }
+        .detail-value {
+            color: #333;
+        }
+        .amount-section {
+            background: #e6f7fb;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 2rem;
+            border: 1px solid #23b5d3;
+        }
+        .amount-label {
+            font-size: 1.2rem;
+            color: #071013;
+            margin-bottom: 0.5rem;
+        }
+        .amount-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #23b5d3;
+        }
+        .receipt-footer {
+            text-align: center;
+            border-top: 2px solid #23b5d3;
+            padding-top: 1rem;
+            color: #666;
+        }
+        .print-btn {
+            margin-top: 1rem;
+        }
+        @media print {
+            .print-btn, .navbar, header { display: none; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Insurance Management System</h1>
+            <nav>
+                <a th:href="@{/dashboard}" class="btn">Dashboard</a>
+                <a th:href="@{/wallet}" class="btn">Wallet</a>
+            </nav>
+        </header>
+
+        <div class="receipt-container">
+            <div class="receipt-header">
+                <h2 class="receipt-title">PAYMENT RECEIPT</h2>
+                <p class="receipt-subtitle">Premium Payment Confirmation</p>
+            </div>
+
+            <div class="receipt-details">
+                <div class="detail-item">
+                    <div class="detail-label">Transaction ID:</div>
+                    <div class="detail-value" th:text="${payment.transactionId}"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Date & Time:</div>
+                    <div class="detail-value" th:text="${#temporals.format(payment.paymentDate, 'dd-MM-yyyy HH:mm:ss')}"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Customer Name:</div>
+                    <div class="detail-value" th:text="${user.fullName}"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Policy Number:</div>
+                    <div class="detail-value" th:text="${payment.policy.policyNumber}"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Policy Type:</div>
+                    <div class="detail-value" th:text="${payment.policy.policyType}"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Payment Method:</div>
+                    <div class="detail-value">Digital Wallet</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Payment Status:</div>
+                    <div class="detail-value" style="color: #23b5d3; font-weight: bold;">SUCCESSFUL</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Payment Type:</div>
+                    <div class="detail-value" th:text="${payment.paymentType}"></div>
+                </div>
+            </div>
+
+            <div class="amount-section">
+                <div class="amount-label">Amount Paid</div>
+                <div class="amount-value">₹<span th:text="${payment.amount}"></span></div>
+            </div>
+
+            <div class="receipt-footer">
+                <p><strong>Thank you for your payment!</strong></p>
+                <p>This is a computer-generated receipt and does not require a signature.</p>
+                <p>For any queries, please contact our customer support.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    Generated on: <span th:text="${#temporals.format(#temporals.createNow(), 'dd-MM-yyyy HH:mm:ss')}"></span>
+                </p>
+            </div>
+
+            <div class="print-btn">
+                <button onclick="window.print()" class="btn btn-primary">Print Receipt</button>
+                <a th:href="@{/wallet}" class="btn">Back to Wallet</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

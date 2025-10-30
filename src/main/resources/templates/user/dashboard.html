@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Insurance Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, <span th:text="${user.fullName}"></span></span>
+                <a th:href="@{/logout}" class="btn btn-logout">Logout</a>
+            </div>
+        </header>
+        
+        <nav class="navbar">
+            <a th:href="@{/dashboard}" class="nav-btn active">Dashboard</a>
+            <a th:href="@{/apply-policy}" class="nav-btn">Add Policy</a>
+            <a th:href="@{/submit-claim}" class="nav-btn">Submit Claim</a>
+            <a th:href="@{/notifications}" class="nav-btn">Notifications</a>
+            <a th:href="@{/payment-history}" class="nav-btn">Payment History</a>
+            <a th:href="@{/wallet}" class="nav-btn">Wallet</a>
+        </nav>
+        
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        
+        <div class="dashboard-content">
+            <div class="main-section">
+                <div class="card">
+                    <h3>My Insurance Policies</h3>
+                    <div th:if="${#lists.isEmpty(policies)}" class="empty-state">
+                        <p>No policies found.</p>
+                        <a th:href="@{/apply-policy}" class="btn btn-primary">Apply for Your First Policy</a>
+                    </div>
+                    <div th:if="${!#lists.isEmpty(policies)}" class="policies-grid">
+                        <div th:each="policy : ${policies}" class="policy-card">
+                            <div class="policy-header">
+                                <h4 th:text="${policy.policyName}"></h4>
+                                <span class="status" th:text="${policy.status}" th:classappend="${policy.status.name().toLowerCase()}"></span>
+                            </div>
+                            <div class="policy-details">
+                                <p><strong>Policy Number:</strong> <span th:text="${policy.policyNumber}"></span></p>
+                                <p><strong>Type:</strong> <span th:text="${policy.policyType}"></span></p>
+                                <p><strong>Premium:</strong> ₹<span th:text="${policy.premiumAmount}"></span></p>
+                                <p><strong>Coverage:</strong> ₹<span th:text="${policy.coverageAmount}"></span></p>
+                                <p><strong>Start Date:</strong> <span th:text="${policy.startDate}"></span></p>
+                                <p><strong>End Date:</strong> <span th:text="${policy.endDate}"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="card">
+                    <h3>Wallet Balance</h3>
+                    <div class="wallet-balance">
+                        ₹<span th:text="${wallet != null ? wallet.balance : '0.00'}"></span>
+                    </div>
+                    <a th:href="@{/wallet}" class="btn btn-small">View Details</a>
+                </div>
+                
+                <div class="card">
+                    <h3>Quick Stats</h3>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number" th:text="${#lists.size(policies)}"></span>
+                            <span class="stat-label">Total Policies</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" th:text="${#lists.size(claims)}"></span>
+                            <span class="stat-label">Claims Submitted</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Recent Notifications</h3>
+                    <div th:if="${#lists.isEmpty(notifications)}">
+                        <p>No notifications</p>
+                    </div>
+                    <div th:each="notification : ${#lists.size(notifications) > 3 ? notifications.subList(0, 3) : notifications}" class="notification-item">
+                        <strong th:text="${notification.title}"></strong>
+                        <p th:text="${notification.message}"></p>
+                        <small th:text="${#temporals.format(notification.createdAt, 'dd-MM-yyyy HH:mm')}"></small>
+                    </div>
+                    <a th:href="@{/notifications}" th:if="${#lists.size(notifications) > 3}" class="btn btn-small">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

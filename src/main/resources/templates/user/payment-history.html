@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Payment History</h1>
+            <nav>
+                <a th:href="@{/dashboard}" class="btn">Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div class="card">
+            <h3>All Transactions</h3>
+            <div th:if="${#lists.isEmpty(payments)}">
+                <p>No payment history found.</p>
+            </div>
+            <div th:if="${!#lists.isEmpty(payments)}" class="payment-list">
+                <div th:each="payment : ${payments}" class="payment-item">
+                    <div class="payment-header">
+                        <strong th:text="${payment.description}"></strong>
+                        <span th:text="${payment.transactionId}" class="transaction-id"></span>
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-info">
+                            <span class="payment-type" th:text="${payment.paymentType}"></span>
+                            <span class="payment-amount">₹<span th:text="${payment.amount}"></span></span>
+                            <span class="payment-status" th:text="${payment.status}" th:classappend="${payment.status.name().toLowerCase()}"></span>
+                        </div>
+                        <div class="payment-meta">
+                            <span th:if="${payment.accountNumber != null}">Account: <span th:text="${payment.accountNumber}"></span></span>
+                            <span th:if="${payment.policy != null}">Policy: <span th:text="${payment.policy.policyNumber}"></span></span>
+                            <small th:text="${#temporals.format(payment.paymentDate, 'dd-MM-yyyy HH:mm')}"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

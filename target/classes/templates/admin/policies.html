@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Policies - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Manage Policies</h1>
+            <nav>
+                <a th:href="@{/admin/dashboard}" class="btn">Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Policy Number</th>
+                        <th>User</th>
+                        <th>Policy Type</th>
+                        <th>Premium</th>
+                        <th>Coverage</th>
+                        <th>Status</th>
+                        <th>Applied Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="policy : ${policies}">
+                        <td th:text="${policy.policyNumber}"></td>
+                        <td th:text="${policy.user.fullName}"></td>
+                        <td th:text="${policy.policyType}"></td>
+                        <td>₹<span th:text="${policy.premiumAmount}"></span></td>
+                        <td>₹<span th:text="${policy.coverageAmount}"></span></td>
+                        <td><span class="status" th:text="${policy.status}" th:classappend="${policy.status.name().toLowerCase()}"></span></td>
+                        <td th:text="${#temporals.format(policy.appliedDate, 'dd-MM-yyyy')}"></td>
+                        <td>
+                            <div th:if="${policy.status.name() == 'PENDING'}">
+                                <form th:action="@{/admin/approve-policy/{id}(id=${policy.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-small btn-success">Approve</button>
+                                </form>
+                                <form th:action="@{/admin/reject-policy/{id}(id=${policy.id})}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-small btn-danger">Reject</button>
+                                </form>
+                            </div>
+                            <span th:if="${policy.status.name() != 'PENDING'}" th:text="${policy.status}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

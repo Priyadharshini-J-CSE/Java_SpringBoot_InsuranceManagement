@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Notifications</h1>
+            <nav>
+                <a th:href="@{/dashboard}" class="btn">Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div class="card">
+            <h3>All Notifications</h3>
+            <div th:if="${#lists.isEmpty(notifications)}">
+                <p>No notifications yet.</p>
+            </div>
+            <div th:each="notification : ${notifications}" class="notification-item">
+                <div class="notification-header">
+                    <strong th:text="${notification.title}"></strong>
+                    <small th:text="${#temporals.format(notification.createdAt, 'dd-MM-yyyy HH:mm')}"></small>
+                </div>
+                <p th:text="${notification.message}"></p>
+                <span th:if="${!notification.read}" class="unread-badge">New</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

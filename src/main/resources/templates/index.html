@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Insurance Management System</h1>
+            <nav>
+                <a th:href="@{/login}" class="btn">Login</a>
+                <a th:href="@{/register}" class="btn btn-primary">Register</a>
+            </nav>
+        </header>
+        
+        <main>
+            <section class="hero">
+                <h2>Secure Your Future with Our Insurance Plans</h2>
+                <p>Comprehensive insurance solutions with easy claim processing and risk management.</p>
+                <a th:href="@{/register}" class="btn btn-large">Get Started</a>
+            </section>
+            
+            <section class="features">
+                <div class="feature">
+                    <h3>Easy Policy Management</h3>
+                    <p>Apply for policies online with simple verification process</p>
+                </div>
+                <div class="feature">
+                    <h3>Quick Claim Processing</h3>
+                    <p>Submit claims with document upload and track status</p>
+                </div>
+                <div class="feature">
+                    <h3>Secure Wallet</h3>
+                    <p>Receive claim settlements directly in your digital wallet</p>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

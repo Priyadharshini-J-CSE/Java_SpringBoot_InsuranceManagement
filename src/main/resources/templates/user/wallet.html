@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>My Wallet</h1>
+            <nav>
+                <a th:href="@{/dashboard}" class="btn">Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        
+        <div class="card">
+            <h3>Wallet Balance</h3>
+            <div class="wallet-balance">
+                ₹<span th:text="${wallet != null ? wallet.balance : '0.00'}"></span>
+            </div>
+            <p>Available balance for policy payments and claims</p>
+        </div>
+        
+        <div class="card">
+            <h3>Recharge Wallet</h3>
+            <form th:action="@{/wallet/recharge}" method="post">
+                <div class="form-group">
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" name="accountNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount (₹):</label>
+                    <input type="number" id="amount" name="amount" step="0.01" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Recharge Wallet</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h3>Pay Policy Premium</h3>
+            <form th:action="@{/wallet/pay-premium}" method="post">
+                <div class="form-group">
+                    <label for="policyId">Select Policy:</label>
+                    <select id="policyId" name="policyId" required>
+                        <option value="">Select Policy</option>
+                        <option th:each="policy : ${policies}" 
+                                th:value="${policy.id}" 
+                                th:text="${policy.policyNumber + ' - ' + policy.policyName + ' (₹' + policy.premiumAmount + ')'}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Pay Premium</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h3>Recent Transactions</h3>
+            <div th:if="${#lists.isEmpty(payments)}">
+                <p>No transactions yet.</p>
+            </div>
+            <div th:each="payment : ${payments}" class="transaction-item">
+                <div class="transaction-header">
+                    <strong th:text="${payment.description}"></strong>
+                    <span th:text="${payment.paymentType}" class="transaction-type"></span>
+                </div>
+                <div class="transaction-details">
+                    <span>₹<span th:text="${payment.amount}"></span></span>
+                    <span th:text="${payment.status}" class="status"></span>
+                    <small th:text="${#temporals.format(payment.paymentDate, 'dd-MM-yyyy HH:mm')}"></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

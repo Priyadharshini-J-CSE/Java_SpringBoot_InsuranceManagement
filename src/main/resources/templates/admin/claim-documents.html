@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claim Documents - Admin Panel</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Claim Documents</h1>
+            <nav>
+                <a th:href="@{/admin/claims}" class="btn">Back to Claims</a>
+            </nav>
+        </header>
+        
+        <div class="card" th:if="${claim != null}">
+            <h3>Claim Details</h3>
+            <p><strong>Claim Number:</strong> <span th:text="${claim.claimNumber}"></span></p>
+            <p><strong>User:</strong> <span th:text="${claim.user.fullName}"></span></p>
+            <p><strong>Policy:</strong> <span th:text="${claim.policy.policyNumber}"></span></p>
+            <p><strong>Claim Type:</strong> <span th:text="${claim.claimType}"></span></p>
+            <p><strong>Amount:</strong> ₹<span th:text="${claim.claimAmount}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${claim.description}"></span></p>
+        </div>
+        
+        <div class="card">
+            <h3>Uploaded Documents</h3>
+            <div th:if="${#lists.isEmpty(documents)}">
+                <p>No documents uploaded for this claim.</p>
+            </div>
+            <div th:if="${!#lists.isEmpty(documents)}" class="documents-list">
+                <div th:each="document : ${documents}" class="document-item">
+                    <div class="document-info">
+                        <strong th:text="${document.documentName}"></strong>
+                        <span th:text="${document.documentType}" class="document-type"></span>
+                        <small th:text="${#temporals.format(document.uploadedDate, 'dd-MM-yyyy HH:mm')}"></small>
+                    </div>
+                    <div class="document-actions">
+                        <a th:href="@{/admin/document/{id}/download(id=${document.id})}" class="btn btn-small">Download</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

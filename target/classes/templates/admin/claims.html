@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Claims - Admin</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Manage Claims</h1>
+            <nav>
+                <a th:href="@{/admin/dashboard}" class="btn">Back to Dashboard</a>
+            </nav>
+        </header>
+        
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Claim Number</th>
+                        <th>User</th>
+                        <th>Policy</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Documents</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="claim : ${claims}">
+                        <td th:text="${claim.claimNumber}"></td>
+                        <td th:text="${claim.user.fullName}"></td>
+                        <td th:text="${claim.policy.policyNumber}"></td>
+                        <td th:text="${claim.claimType}"></td>
+                        <td>₹<span th:text="${claim.claimAmount}"></span></td>
+                        <td><span class="status" th:text="${claim.status}" th:classappend="${claim.status.name().toLowerCase()}"></span></td>
+                        <td>
+                            <a th:href="@{/admin/claim/{id}/documents(id=${claim.id})}" class="btn btn-small">View Documents</a>
+                        </td>
+                        <td>
+                            <div th:if="${claim.status.name() == 'PENDING'}">
+                                <form th:action="@{/admin/approve-claim/{id}(id=${claim.id})}" method="post" style="display: inline;">
+                                    <input type="number" name="approvedAmount" th:value="${claim.claimAmount}" step="0.01" required style="width: 100px;">
+                                    <button type="submit" class="btn btn-small btn-success">Approve</button>
+                                </form>
+                                <form th:action="@{/admin/reject-claim/{id}(id=${claim.id})}" method="post" style="display: inline;">
+                                    <input type="text" name="reason" placeholder="Reason" required style="width: 150px;">
+                                    <button type="submit" class="btn btn-small btn-danger">Reject</button>
+                                </form>
+                            </div>
+                            <span th:if="${claim.status.name() != 'PENDING'}" th:text="${claim.status}"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

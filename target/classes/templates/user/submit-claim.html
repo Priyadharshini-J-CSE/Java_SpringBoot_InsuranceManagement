@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Claim - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Submit Insurance Claim</h1>
+            <div class="user-info">
+                <a th:href="@{/dashboard}" class="btn">Back to Dashboard</a>
+            </div>
+        </header>
+        
+        <nav class="navbar">
+            <a th:href="@{/dashboard}" class="nav-btn">Dashboard</a>
+            <a th:href="@{/apply-policy}" class="nav-btn">Add Policy</a>
+            <a th:href="@{/submit-claim}" class="nav-btn active">Submit Claim</a>
+            <a th:href="@{/notifications}" class="nav-btn">Notifications</a>
+            <a th:href="@{/payment-history}" class="nav-btn">Payment History</a>
+            <a th:href="@{/wallet}" class="nav-btn">Wallet</a>
+        </nav>
+        
+        <div class="form-container">
+            <form th:action="@{/submit-claim}" th:object="${claim}" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="policy">Select Policy:</label>
+                    <select id="policy" name="policyId" required>
+                        <option value="">Select Policy</option>
+                        <option th:each="policy : ${policies}" 
+                                th:value="${policy.policyNumber}" 
+                                th:text="${policy.policyNumber + ' - ' + policy.policyName + ' (' + policy.policyType + ')'}"></option>
+                    </select>
+                    <div th:if="${#lists.isEmpty(policies)}" class="alert alert-error">
+                        <p>No active policies found. <a th:href="@{/apply-policy}">Apply for a policy first</a></p>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="claimType">Claim Type:</label>
+                    <select id="claimType" th:field="*{claimType}" required>
+                        <option value="">Select Claim Type</option>
+                        <option value="MEDICAL">Medical Reimbursement</option>
+                        <option value="ACCIDENT">Accident Claim</option>
+                        <option value="DAMAGE">Property Damage</option>
+                        <option value="OTHER">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" th:field="*{description}" rows="4" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="claimAmount">Claim Amount (₹):</label>
+                    <input type="number" id="claimAmount" th:field="*{claimAmount}" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="documents">Upload Documents:</label>
+                    <input type="file" id="documents" name="documents" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                    <small>Upload supporting documents (PDF, JPG, PNG, DOC)</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Submit Claim</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

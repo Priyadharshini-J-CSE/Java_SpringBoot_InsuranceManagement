@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Insurance Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <nav>
+                <a th:href="@{/admin/policies}" class="btn">Manage Policies</a>
+                <a th:href="@{/admin/claims}" class="btn">Manage Claims</a>
+                <a th:href="@{/logout}" class="btn">Logout</a>
+            </nav>
+        </header>
+        
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Pending Policies</h3>
+                <div class="count" th:text="${#lists.size(pendingPolicies)}"></div>
+                <a th:href="@{/admin/policies}" class="btn">Review Policies</a>
+            </div>
+            
+            <div class="card">
+                <h3>Pending Claims</h3>
+                <div class="count" th:text="${#lists.size(pendingClaims)}"></div>
+                <a th:href="@{/admin/claims}" class="btn">Review Claims</a>
+            </div>
+            
+            <div class="card">
+                <h3>Total Policies</h3>
+                <div class="count" th:text="${#lists.size(allPolicies)}"></div>
+            </div>
+            
+            <div class="card">
+                <h3>Recent Policy Applications</h3>
+                <div th:if="${#lists.isEmpty(pendingPolicies)}">
+                    <p>No pending policies</p>
+                </div>
+                <div th:each="policy : ${#lists.size(pendingPolicies) > 5 ? pendingPolicies.subList(0, 5) : pendingPolicies}" class="policy-item">
+                    <strong th:text="${policy.policyNumber}"></strong>
+                    <span th:text="${policy.user.fullName}"></span>
+                    <span th:text="${policy.policyType}"></span>
+                    <div class="actions">
+                        <form th:action="@{/admin/approve-policy/{id}(id=${policy.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-small btn-success">Approve</button>
+                        </form>
+                        <form th:action="@{/admin/reject-policy/{id}(id=${policy.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-small btn-danger">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Recent Claims</h3>
+                <div th:if="${#lists.isEmpty(pendingClaims)}">
+                    <p>No pending claims</p>
+                </div>
+                <div th:each="claim : ${#lists.size(pendingClaims) > 5 ? pendingClaims.subList(0, 5) : pendingClaims}" class="claim-item">
+                    <strong th:text="${claim.claimNumber}"></strong>
+                    <span th:text="${claim.user.fullName}"></span>
+                    <span th:text="${claim.claimType}"></span>
+                    <span>₹<span th:text="${claim.claimAmount}"></span></span>
+                </div>
+                <a th:href="@{/admin/claims}" th:if="${#lists.size(pendingClaims) > 5}">View all claims</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
